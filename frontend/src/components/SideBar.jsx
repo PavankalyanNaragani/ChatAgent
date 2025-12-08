@@ -1,10 +1,10 @@
-import { MessageSquare, Settings } from "lucide-react";
+import { MessageSquare, Settings, LogOut } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import axiosInstance from "../axiosInstance";
 import { AuthContext } from "../AuthProvider";
 
 export default function Sidebar() {
-  const { user } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
   const [recentChats, setRecentChats] = useState([]);
 
   // Fetch recent sessions and display their title
@@ -51,13 +51,18 @@ export default function Sidebar() {
       </div>
       {/* ----------------------------------------------- */}
       </nav>
-
-      {/* User */}
-      <div className="mt-auto flex items-center gap-3 py-2 pl-0 hover:bg-gray-800 cursor-pointer transition">
-        <Settings size={22} />
-        <span>{user?.username || "Guest"}</span>
+        {/* User */}
+      <div className="mt-auto flex flex-col gap-3 py-2">
+       
+            <button
+              onClick={logout}
+              className="flex items-center gap-2 text-red-400 hover:text-red-300 transition text-sm"
+            >
+              <LogOut size={18} />
+              <span>Logout</span>
+            </button>
       </div>
-
+       
       {/* Footer */}
       <div className="mt-2 text-sm text-gray-500">© 2025 IntelliChat</div>
     </div>

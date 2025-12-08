@@ -1,7 +1,8 @@
-import React, { use, useState } from 'react'
+import React, { use, useContext, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
+import { AuthContext } from "../AuthProvider"
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -10,6 +11,7 @@ const Login = () => {
     const [errors, setErrors] = useState({});
     
     const navigate = useNavigate();
+    const {setIsLoggedIn } = useContext(AuthContext);
 
     const handleSubmit = async(e) =>{
         e.preventDefault();
@@ -27,6 +29,7 @@ const Login = () => {
             localStorage.setItem('accessToken', response.data.access)
             localStorage.setItem('refreshToken', response.data.refresh)
             console.log('Login successful');
+            setIsLoggedIn(true);
             navigate('/')
         }catch(error){
             console.error("Invalid credentials")
