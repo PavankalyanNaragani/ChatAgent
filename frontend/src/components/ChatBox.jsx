@@ -50,6 +50,7 @@ export default function ChatBox({ sessionId, setSessionId }) {
 
     try {
       let activeId = sessionId;
+      let isNewChat = false;
 
       // B. If NO Session ID (New Chat Mode), create one first!
       if (!activeId) {
@@ -57,10 +58,7 @@ export default function ChatBox({ sessionId, setSessionId }) {
           session_name: currentMessage.substring(0, 30) // Title = first 30 chars
         });
         activeId = createRes.data.id;
-        
-        // CRITICAL: Tell the Parent (ChatLayout) about the new ID
-        // This forces the Sidebar to refresh and highlight the new chat
-        setSessionId(activeId); 
+        isNewChat = true;
       }
 
       // C. Send the actual message to the AI
@@ -71,6 +69,10 @@ export default function ChatBox({ sessionId, setSessionId }) {
       // D. Append AI Response
       const aiMsg = { role: "ai", content: res.data.content };
       setMessages((prev) => [...prev, aiMsg]);
+
+      if (isNewChat) {
+        setSessionId(activeId); 
+      }
 
     } catch (err) {
       console.error("Error sending message", err);
