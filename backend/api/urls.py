@@ -25,8 +25,7 @@ urlpatterns = [
     # 1. Sidebar: List all chats (GET) or Create new chat (POST)
     path('sessions/', ChatSessionListCreateView.as_view(), name='chat-sessions'),
     
-    # 2. Chat Window: Get specific chat history (GET)
-    # This allows: /api/sessions/5/messages/
+    #  Chat Window: Get specific chat history (GET)
     path('sessions/<int:session_id>/messages/', ChatHistoryView.as_view(), name='chat-history'),
     
     # 3. Send Message: User sends text -> AI responds (POST)
