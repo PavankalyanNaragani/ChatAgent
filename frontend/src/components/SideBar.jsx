@@ -7,12 +7,12 @@ export default function Sidebar() {
   const { user } = useContext(AuthContext);
   const [recentChats, setRecentChats] = useState([]);
 
-  // Fetch recent sessions from /api/sessions/ endpoint
+  // Fetch recent sessions and display their title
   useEffect(() => {
     async function fetchSessions() {
-      if (!user) return;
       try {
         const res = await axiosInstance.get("/sessions/");
+        console.log(res.data)
         setRecentChats(res.data);
       } catch (err) {
         console.error("Failed to load sessions", err);
@@ -34,23 +34,22 @@ export default function Sidebar() {
           <span>New Chat</span>
         </a>
 
-        {/* Recent Sessions */}
-        <div className="mt-4 text-gray-400 text-sm uppercase tracking-wide">Recent Chats</div>
-        <div className="flex flex-col gap-2 text-gray-300">
-          {user ? (
-            recentChats.length > 0 ? (
-              recentChats.map((session) => (
-                <a key={session.id} className="py-2 pl-0 hover:bg-gray-800 cursor-pointer transition">
-                  {session.title || `Session ${session.id}`}
-                </a>
-              ))
-            ) : (
-              <p className="text-gray-500 text-sm">No chats yet</p>
-            )
-          ) : (
-            <p className="text-gray-500 text-sm">Login to see chats</p>
-          )}
+        {/* --- THIS IS THE PART THAT RENDERS YOUR ARRAY --- */}
+      <div className="flex-1 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-700">
+        <div className="text-gray-500 text-xs uppercase tracking-wide mb-2 font-semibold">Recent Chats</div>
+        
+        <div className="flex flex-col gap-1">
+          {recentChats.map((session) => (
+            <div className="flex items-center gap-3 py-2 pl-0 hover:bg-gray-800 cursor-pointer transition">
+              <MessageSquare size={16} className="shrink-0" />
+              <span className="truncate">
+                {session.title} 
+              </span>
+            </div>
+          ))}
         </div>
+      </div>
+      {/* ----------------------------------------------- */}
       </nav>
 
       {/* User */}
