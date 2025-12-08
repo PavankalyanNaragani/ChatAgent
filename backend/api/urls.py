@@ -11,7 +11,8 @@ from .views import (
     MyTokenObtainPairView,
     ChatSessionListCreateView, # Use this instead of ViewSet for better control
     ChatHistoryView,           # Needed for loading chat history
-    SendMessageView            # CRITICAL: This is where the AI lives
+    SendMessageView,
+    UploadDocumentView
 )
 
 urlpatterns = [
@@ -22,13 +23,10 @@ urlpatterns = [
     
     # --- Chat URLs ---
     
-    # 1. Sidebar: List all chats (GET) or Create new chat (POST)
     path('sessions/', ChatSessionListCreateView.as_view(), name='chat-sessions'),
-    
-    #  Chat Window: Get specific chat history (GET)
     path('sessions/<int:session_id>/messages/', ChatHistoryView.as_view(), name='chat-history'),
-    
-    # 3. Send Message: User sends text -> AI responds (POST)
-    # This triggers the "Simulated AI" logic
     path('sessions/<int:session_id>/send/', SendMessageView.as_view(), name='chat-send'),
+    
+    path('sessions/<int:session_id>/upload/', UploadDocumentView.as_view(), name='upload-doc'),
+    
 ]

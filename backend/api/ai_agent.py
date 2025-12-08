@@ -1,39 +1,72 @@
 import os
-from langchain_groq import ChatGroq
-from langchain_core.messages import HumanMessage, SystemMessage
-from langgraph.graph import StateGraph, START, END
 from typing import TypedDict, List
+from langchain_groq import ChatGroq
+from langgraph.graph import StateGraph, END
+from langchain_core.messages import BaseMessage
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from django.conf import settings
 
 
+# 1. LLM Setup
 groq_api_key = os.getenv("GROQ_API_KEY")
 llm = ChatGroq(
-    temperature=0, 
+    temperature=0.2,
     model="llama-3.3-70b-versatile",
     groq_api_key=groq_api_key
 )
 
-# The "State" is the memory that gets passed between nodes (e.g., from RAG node to Generation node)
-class State(TypedDict):
-    messages: List[HumanMessage]
-    answer: str
 
-# 3. Define the Node (The Logic)
-def generate_response(state: State):
-    # Get the user's latest message
-    user_message = state["messages"][-1]
-    
-    # Call Gemini
-    response = llm.invoke([user_message])
-    
-    # Return the updated state
-    return {"answer": response.content}
+# 2. State Definition
+class AgentState(TypedDict):
+    messages: List[BaseMessage]
+    context: str   # Holds PDF context
 
-# 4. Build the Graph
-workflow = StateGraph(State)
 
-# Add nodes (steps in the workflow)
-workflow.add_node("chatbot", generate_response)
-workflow.add_edge(START, "chatbot")
-workflow.add_edge("chatbot", END)
+# 3. System Prompt
+system_prompt = """
+You are a helpful AI assistant called IntelliChat.
+
+{context_instruction}
+
+Answer the user's question based on the conversation history and the context provided above.
+If the answer is not in the context, answer using your general knowledge.
+"""
+
+
+# 4. Node Function
+def call_model(state: AgentState):
+    messages = state["messages"]
+    context = state.get("context", "")
+
+    if context:
+        context_instruction = (
+            "Here is the context from the user's uploaded documents:\n\n" + context + "\n"
+        )
+    else:
+        context_instruction = "No documents uploaded. Answer normally."
+
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", system_prompt),
+        MessagesPlaceholder(variable_name="messages"),
+    ])
+
+    chain = prompt | llm
+
+    response = chain.invoke({
+        "context_instruction": context_instruction,
+        "messages": messages
+    })
+
+    return {
+        "messages": messages + [response],
+        "context": context
+    }
+
+
+# 5. Build Graph
+workflow = StateGraph(AgentState)
+workflow.add_node("agent", call_model)
+workflow.set_entry_point("agent")
+workflow.add_edge("agent", END)
 
 ai_graph = workflow.compile()
