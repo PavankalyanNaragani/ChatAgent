@@ -28,6 +28,7 @@ dist-ssr
 chroma_db/
 chroma_db
 
+
 # Ignore Uploaded User Files (PDFs)
 media/
 backend/media/

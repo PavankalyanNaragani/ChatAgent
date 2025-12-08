@@ -188,3 +188,13 @@ thumb
 sketch
 
 # End of https://www.toptal.com/developers/gitignore/api/django,react
+
+
+# Ignore Vector Database
+chroma_db/
+chroma_db
+
+
+# Ignore Uploaded User Files (PDFs)
+media/
+backend/media/
