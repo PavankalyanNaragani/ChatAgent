@@ -22,3 +22,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# ... your existing ignores ...
+
+# Ignore Vector Database
+chroma_db/
+chroma_db
+
+# Ignore Uploaded User Files (PDFs)
+media/
+backend/media/
