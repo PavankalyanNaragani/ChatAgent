@@ -3,9 +3,8 @@ import { useContext, useEffect, useState } from "react";
 import axiosInstance from "../axiosInstance";
 import { AuthContext } from "../AuthProvider";
 
-export default function Sidebar({ onSelectSession, onNewChat, activeSessionId }) {
+export default function Sidebar({ onSelectSession, onNewChat, activeSessionId, refreshTrigger }) {
   const { user, logout } = useContext(AuthContext);
-  const [recentChats, setRecentChats] = useState([]);
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -16,6 +15,16 @@ export default function Sidebar({ onSelectSession, onNewChat, activeSessionId })
         const res = await axiosInstance.get("/sessions/");
         console.log(res.data)
         setSessions(res.data);
+
+        if (activeSessionId === null) {
+          if (res.data.length > 0) {
+            // Automatically select the most recent chat
+            onSelectSession(res.data[0].id);
+          } else {
+            // If no chats exist, start a new one automatically
+            onNewChat();
+          }
+        }
       } catch (err) {
         console.error("Failed to load sessions", err);
       }finally{
@@ -23,7 +32,7 @@ export default function Sidebar({ onSelectSession, onNewChat, activeSessionId })
       }
     }
     fetchSessions();
-  }, [user, activeSessionId]);
+  }, [user, activeSessionId, refreshTrigger]);
 
   return (
     <div className="h-screen w-64 bg-gray-900 text-white flex flex-col p-4 border-r border-gray-800">
@@ -33,9 +42,8 @@ export default function Sidebar({ onSelectSession, onNewChat, activeSessionId })
           <span className="text-purple-500">⚡</span> IntelliChat
         </div>
 
-        {/* 3. Wire up "New Chat" Button */}
         <button 
-          onClick={onNewChat} // <--- Call the prop function
+          onClick={onNewChat} 
           className="w-full flex items-center gap-2 px-4 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors text-sm font-medium shadow-md"
         >
           <PlusCircle size={18} />
