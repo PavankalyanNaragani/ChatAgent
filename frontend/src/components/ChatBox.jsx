@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Send, Bot, User, Loader2, Paperclip, FileText } from "lucide-react"; 
 import axiosInstance from "../axiosInstance";
+import MessageContent from "./MessageContent";
+
 
 export default function ChatBox({ sessionId, setSessionId, onTitleUpdate }) {
   const [messages, setMessages] = useState([]);
@@ -133,10 +135,10 @@ export default function ChatBox({ sessionId, setSessionId, onTitleUpdate }) {
 
                   <div className={`max-w-[80%] px-5 py-3 rounded-2xl text-sm leading-relaxed shadow-md ${
                     msg.role === "user" 
-                      ? "bg-purple-600 text-white rounded-br-none" 
-                      : "bg-gray-800 text-gray-200 border border-gray-700 rounded-bl-none"
-                  }`}>
-                    {msg.content} 
+                    ? "bg-purple-600 text-white rounded-br-none" 
+                    : "bg-gray-800 text-gray-200 border border-gray-700 rounded-bl-none overflow-hidden" // Added overflow-hidden for code blocks
+                    }`}>
+                   <MessageContent content={msg.content} />
                   </div>
                 </>
              )}
