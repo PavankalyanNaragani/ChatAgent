@@ -29,7 +29,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'a-safe-default-for-development-only')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
+ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'accounts.Account'
 
@@ -86,13 +86,14 @@ WSGI_APPLICATION = 'chatbot_main.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-''' DATABASES = {
+DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
-} '''
+} 
 
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -104,7 +105,7 @@ DATABASES = {
         'HOST': os.getenv('DB_HOST', 'localhost'), 
         'PORT': os.getenv('DB_PORT', '5432'),
     }
-}
+}'''
 
 
 # Password validation
@@ -166,11 +167,10 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1)
 }
 
-'''CORS_ALLOWED_ORIGINS = [
+CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:5173",
-]'''
+]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-CORS_ALLOWED_ORIGINS = os.getenv('CORS_ORIGINS', 'http://localhost:5173').split(',')
