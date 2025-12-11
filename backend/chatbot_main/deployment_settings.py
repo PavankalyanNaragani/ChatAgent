@@ -4,8 +4,7 @@ from .settings import *
 from .settings import BASE_DIR
 
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['https://'+os.environ.get('RENDER_EXTERNAL_HOSTNAME')]
-
+CSRF_TRUSTED_ORIGINS = ['http://localhost:5173', 'http://127.0.0.1:3000']
 DEBUG = True
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
