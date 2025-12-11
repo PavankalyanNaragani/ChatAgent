@@ -13,7 +13,7 @@ from .serializers import ChatSessionSerializer, MyTokenObtainPairSerializer
 from django.contrib.auth import get_user_model
 from rest_framework.parsers import MultiPartParser, FormParser
 from .models import Document
-from .rag_utils import index_document_to_chroma
+from .rag_utils import index_document_to_pinecone
 
 User = get_user_model()
 
@@ -138,7 +138,7 @@ class UploadDocumentView(APIView):
 
             # 4. Trigger Vector Indexing (RAG)
             # We pass the file path on the disk to our utility function
-            index_document_to_chroma(doc.file.path, session.id)
+            index_document_to_pinecone(doc.file.path, session.id)
 
             return Response({
                 "message": "File processed successfully", 

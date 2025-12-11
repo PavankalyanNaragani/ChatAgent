@@ -7,6 +7,8 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from django.conf import settings
 
 
+
+
 # 1. LLM Setup
 groq_api_key = os.getenv("GROQ_API_KEY")
 llm = ChatGroq(
