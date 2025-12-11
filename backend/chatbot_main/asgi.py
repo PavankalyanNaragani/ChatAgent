@@ -1,17 +1,10 @@
 """
 ASGI config for chatbot_main project.
-
-It exposes the ASGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/5.2/howto/deployment/asgi/
 """
-
 import os
-
 from django.core.asgi import get_asgi_application
 
-settings_module = 'chatbot_main.deployment_settings' if 'RENDER_EXTERNAL_HOSTNAME' in os.environ else 'chatbot_main.settings'
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', settings_module)
+# Point strictly to the main settings file
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'chatbot_main.settings')
 
 application = get_asgi_application()
